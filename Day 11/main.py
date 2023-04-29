@@ -2,69 +2,80 @@
 import random
 import art
 
-def replace_ace(list):
-    while sum(list) > 21 and 11 in list:
-       ace_index = list.index(11)
-       list[ace_index] = 1
-    return list
+def cards():
+    return [11, 2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10]
 
-def play_black_jack():
+def calculate_score(list):
+    total_score = sum(list)
+    # if first 2 card has 11 and 10 then its a Black Jack
+    if total_score == 21 and len(list) == 2:
+        return 0
+    # replace 11 with 1 if score is greater then 21
+    elif total_score > 21 and 11 in list:
+        list.remove(11)
+        list.append(1)
     
-    wanna_play = input("Do you want to play a game of BlackJack? Type 'y' or 'n'\n").lower()
+    return sum(list)
 
-    if wanna_play == 'y':
-        cards = [11, 2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10]
+def pick_cards(count):
+    # return list of random cards
+    return random.sample(cards(), count)
 
-        your_card = random.sample(cards, 2)
-
-        computer_card = random.choice(cards)
-
-        print(art.logo)
-        print(f"Your cards: {your_card}, current score: {sum(your_card)} ")
-
-        print(f"Computer's first card: {computer_card}")
-
-        while sum(your_card) < 21:
-
-            wanna_pick_another_card = input("Type 'y' to get another card, type 'n' to pass:\n").lower()
-
-            if wanna_pick_another_card == 'y':
-                your_card.append(random.choice(cards))
-
-            if sum(your_card) > 21:
-                your_card = replace_ace(your_card)
-
-            print(f"Your cards: {your_card}, current score: {sum(your_card)} ")    
-        
-        computer_cards = [computer_card]
-        
-        while sum(computer_cards) < 16: 
-
-            computer_cards.append(random.choice(cards))
-
-            if sum(computer_cards) > 21:
-                computer_cards = replace_ace(computer_cards)
-
-        print(f"Your cards: {your_card}, current score: {sum(your_card)} ")
-
-        print(f"Computer's cards: {computer_cards}, current score: {sum(computer_cards)} ")
-
-        if sum(your_card) > 21:
-            print("You went over. You Lose !!!")
-        elif sum(computer_cards) > 21:
-            print("CPU went over. You WON !!!")
-        elif sum(your_card) == sum(computer_cards):
-            print("Its a Draw")
-        elif sum(your_card) > sum(computer_cards):
-            print("You Won !!!")
-        else:
-            print("You Lose!!")
-
-        play_black_jack()
+def compare_score(user_score, computer_score):
+    if computer_score == user_score:
+        return "Its a Draw"
+    elif computer_score == 0:
+        return "Computer WON .. BlackJack"
+    elif user_score == 0:
+        return "You Won ... BlackJack"
+    elif user_score > 21:
+        return "You Lose .. its Bust"
+    elif computer_score > 21:
+        return "You Won ... Computer Bust"
+    elif user_score > computer_score:
+        return "You Won"
     else:
-        return
+        return "You Lose" 
+    
+def is_game_over(calculated_user_score, calculate_computer_score):
+    return calculated_user_score == 0 or calculate_computer_score == 0 or calculated_user_score > 21
 
+def play_game():
 
+    print(art.logo)
 
+    user_cards = pick_cards(2)
+    computer_cards = pick_cards(2)
 
-play_black_jack()
+    print(f"Your cards: {user_cards}, current score: {sum(user_cards)} ")
+    print(f"Computer's first hand: {computer_cards[0]}")    
+    
+    calculated_user_score = calculate_score(user_cards)
+    calculate_computer_score = calculate_score(computer_cards)
+
+    has_ended = is_game_over(calculated_user_score,calculate_computer_score)
+
+    while not has_ended:
+
+       if input("Type 'y' to get another card, type 'n' to pass:\n").lower() == 'y':
+           user_cards.extend(pick_cards(1))
+           calculated_user_score = calculate_score(user_cards)
+           has_ended = is_game_over(calculated_user_score,calculate_computer_score)
+       else:
+           has_ended = True     
+        
+       print(f"Your cards: {user_cards}, current score: {calculated_user_score} ")
+
+    calculated_user_score = calculate_score(user_cards)
+
+    if calculate_computer_score < 17:
+        computer_cards.extend(pick_cards(1))
+        calculate_computer_score = calculate_score(computer_cards)
+
+    print(f"Your final cards: {user_cards}, final score: {calculated_user_score}.")
+    print(f"Computer's cards: {computer_cards}, final score: {calculate_computer_score}.")
+
+    print(compare_score(user_score=calculated_user_score, computer_score=calculate_computer_score))
+
+while input("Do you want to play a game of BlackJack? Type 'y' or 'n'\n").lower() == 'y':
+    play_game()
