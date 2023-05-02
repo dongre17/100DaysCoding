@@ -35,7 +35,8 @@ while not is_game_end:
         player_one = None
     
     if who_is_more_famous == pick_more_famous_celebrity:
-        final_score += 1        
+        final_score += 1
+        print(f"You are right, current score: {final_score}")        
     else:
         is_game_end = True
 
