@@ -72,10 +72,14 @@ def provide_order_item(ordered_coffee, amount_paying):
 
 menu = ["Espresso", "Latte", "Cappuccino"]
 
-while len(menu) > 0:
+is_maintenance = False
+
+while len(menu) > 0 and not is_maintenance:
     coffee_order = input(f"What would you like? ({'/'.join(menu).lower()}): ").title()
 
-    if coffee_order == 'Report':
+    if coffee_order == 'Off':
+        is_maintenance = True
+    elif coffee_order == 'Report':
         print_report()
     else:
         if not check_coffee_machine_stock(coffee_order):
