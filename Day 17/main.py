@@ -9,7 +9,7 @@ for key in question_data:
     answer = key['answer']
     question_bank.append(Question(question, answer))
 
-quiz = QuizBrain(1, question_bank)
+quiz = QuizBrain(question_bank)
 
 quiz.next_question()
 
