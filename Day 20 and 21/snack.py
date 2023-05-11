@@ -69,4 +69,3 @@ class Snack:
                 return True
 
         return False
-
